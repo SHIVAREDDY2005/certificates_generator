@@ -11,8 +11,6 @@ st.set_page_config(
     page_icon="🎓",
     layout="wide"
 )
-
-# ---------------------------------------------------------------- UI styling
 # ---------------------------------------------------------------- UI styling
 st.markdown(
     """
@@ -54,7 +52,7 @@ st.markdown(
 
     .block-container {
         max-width: 1280px;
-        padding-top: 2.2rem;
+        padding-top: 3.5rem;
         padding-bottom: 4rem;
     }
 
