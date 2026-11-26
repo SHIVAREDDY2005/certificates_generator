@@ -244,7 +244,95 @@ st.markdown(
     #MainMenu, footer {
         visibility: hidden;
     }
+/* -----------------------------------------
+   FIX 1: INFO AND WARNING MESSAGES
+----------------------------------------- */
 
+div[data-testid="stAlert"] {
+    background: #F6F7FB !important;
+    background-color: #F6F7FB !important;
+    border: 1px solid #E2E5EC !important;
+    border-radius: 9px !important;
+}
+
+div[data-testid="stAlert"] * {
+    color: #172033 !important;
+    background-color: transparent !important;
+}
+
+div[data-testid="stAlert"] svg {
+    color: #5145A5 !important;
+}
+
+/* -----------------------------------------
+   FIX 2: NUMBER INPUT + AND - BUTTONS
+----------------------------------------- */
+
+div[data-testid="stNumberInput"] button {
+    background: #F6F7FB !important;
+    background-color: #F6F7FB !important;
+    color: #172033 !important;
+    border: 1px solid #D5D9E2 !important;
+}
+
+div[data-testid="stNumberInput"] button:hover {
+    background: #E9E7F7 !important;
+    color: #393078 !important;
+}
+
+div[data-testid="stNumberInput"] button svg {
+    color: #393078 !important;
+    fill: #393078 !important;
+}
+
+/* -----------------------------------------
+   FIX 3: MOBILE RESPONSIVE LAYOUT
+----------------------------------------- */
+
+@media (max-width: 768px) {
+
+    .block-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 1.2rem !important;
+    }
+
+    /* Stack the main sections vertically */
+    div[data-testid="stHorizontalBlock"] {
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        width: 100% !important;
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    /* Responsive title */
+    .app-title {
+        font-size: 1.7rem !important;
+    }
+
+    .app-sub {
+        font-size: 0.9rem !important;
+    }
+}
+
+/* -----------------------------------------
+   FIX 4: INPUT FIELD COLORS
+----------------------------------------- */
+
+div[data-testid="stNumberInput"] input {
+    background: #FFFFFF !important;
+    color: #172033 !important;
+    -webkit-text-fill-color: #172033 !important;
+}
+
+div[data-testid="stNumberInput"] > div {
+    background: #FFFFFF !important;
+    border-color: #D5D9E2 !important;
+}
     </style>
     """,
     unsafe_allow_html=True,
