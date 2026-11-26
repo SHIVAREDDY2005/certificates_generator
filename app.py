@@ -1,266 +1,3 @@
-
-# import streamlit as st
-# import pandas as pd
-# from PIL import Image, ImageDraw, ImageFont
-# from pathlib import Path
-# import zipfile
-# import io
-# import re
-
-# st.set_page_config(
-#     page_title="Certificate Generator",
-#     page_icon="🎓",
-#     layout="wide"
-# )
-
-# st.title("🎓 Certificate Generator")
-# st.write("Upload your certificate and participant CSV to generate certificates.")
-
-# # File uploads
-# st.header("1. Upload Files")
-
-# template_file = st.file_uploader(
-#     "Upload Certificate Template",
-#     type=["png", "jpg", "jpeg"]
-# )
-
-# csv_file = st.file_uploader(
-#     "Upload Participants CSV",
-#     type=["csv"]
-# )
-
-# # Settings
-# st.header("2. Customize Certificate")
-
-# col1, col2 = st.columns(2)
-
-# with col1:
-#     st.subheader("Name Position")
-
-#     name_x = st.number_input(
-#         "Name X Coordinate",
-#         min_value=0,
-#         value=1280
-#     )
-
-#     name_y = st.number_input(
-#         "Name Y Coordinate",
-#         min_value=0,
-#         value=2150
-#     )
-
-#     font_size = st.slider(
-#         "Name Font Size",
-#         min_value=20,
-#         max_value=200,
-#         value=100
-#     )
-
-#     max_width = st.number_input(
-#         "Maximum Name Width",
-#         min_value=100,
-#         value=11000
-#     )
-
-# with col2:
-#     st.subheader("Certificate ID Position")
-
-#     id_x = st.number_input(
-#         "ID X Coordinate",
-#         min_value=0,
-#         value=1280
-#     )
-
-#     id_y = st.number_input(
-#         "ID Y Coordinate",
-#         min_value=0,
-#         value=2820
-#     )
-
-#     id_font_size = st.slider(
-#         "ID Font Size",
-#         min_value=10,
-#         max_value=80,
-#         value=28
-#     )
-
-#     name_color = st.color_picker(
-#         "Name Color",
-#         "#393078"
-#     )
-
-# # Font
-# font_path = Path("fonts/Montserrat-VariableFont_wght.ttf")
-
-# def load_font(size):
-#     font = ImageFont.truetype(str(font_path), size)
-#     font.set_variation_by_name("Bold")
-#     return font
-
-# # Generate certificate
-# def generate_certificate(template, name, credential_id):
-
-#     image = template.copy().convert("RGBA")
-#     draw = ImageDraw.Draw(image)
-
-#     size = font_size
-
-#     while size >= 20:
-#         font = load_font(size)
-
-#         bbox = draw.textbbox((0, 0), name, font=font)
-
-#         if bbox[2] - bbox[0] <= max_width:
-#             break
-
-#         size -= 1
-
-#     draw.text(
-#         (name_x, name_y),
-#         name,
-#         fill=name_color,
-#         font=font,
-#         anchor="mm"
-#     )
-
-#     id_font = load_font(id_font_size)
-
-#     draw.text(
-#         (id_x, id_y),
-#         f"Certificate ID : {credential_id}",
-#         fill="#393078",
-#         font=id_font,
-#         anchor="mm"
-#     )
-
-#     return image
-
-
-# # Preview and generation
-# if template_file:
-
-#     template = Image.open(template_file).convert("RGBA")
-
-#     st.header("3. Certificate Preview")
-
-#     preview_name = "Sample Participant"
-#     preview_id = "CERT-001"
-
-#     preview = generate_certificate(
-#         template,
-#         preview_name,
-#         preview_id
-#     )
-
-#     st.image(
-#         preview,
-#         caption="Live Certificate Preview",
-#         use_container_width=True
-#     )
-
-# if csv_file and template_file:
-
-#     df = pd.read_csv(csv_file)
-
-#     required = {"username", "credential_id"}
-
-#     if not required.issubset(df.columns):
-
-#         st.error(
-#             "CSV must contain username and credential_id columns."
-#         )
-
-#     else:
-
-#         st.header("4. Participants")
-
-#         st.dataframe(df, use_container_width=True)
-
-#         if st.button(
-#             "🚀 Generate All Certificates",
-#             type="primary",
-#             use_container_width=True
-#         ):
-
-#             zip_buffer = io.BytesIO()
-
-#             with zipfile.ZipFile(
-#                 zip_buffer,
-#                 "w",
-#                 zipfile.ZIP_DEFLATED
-#             ) as zip_file:
-
-#                 progress = st.progress(0)
-
-#                 for index, row in df.iterrows():
-
-#                     name = str(row["username"]).strip()
-#                     credential_id = str(
-#                         row["credential_id"]
-#                     ).strip()
-
-#                     if not name or not credential_id:
-#                         continue
-
-#                     certificate = generate_certificate(
-#                         template,
-#                         name,
-#                         credential_id
-#                     )
-
-#                     safe_id = re.sub(
-#                         r"[^A-Za-z0-9_-]",
-#                         "_",
-#                         credential_id
-#                     )
-
-#                     # PNG
-#                     png_buffer = io.BytesIO()
-#                     certificate.save(png_buffer, format="PNG")
-
-#                     zip_file.writestr(
-#                         f"{safe_id}.png",
-#                         png_buffer.getvalue()
-#                     )
-
-#                     # PDF
-#                     pdf_buffer = io.BytesIO()
-
-#                     white_bg = Image.new(
-#                         "RGB",
-#                         certificate.size,
-#                         "white"
-#                     )
-
-#                     white_bg.paste(
-#                         certificate,
-#                         mask=certificate.getchannel("A")
-#                     )
-
-#                     white_bg.save(
-#                         pdf_buffer,
-#                         format="PDF",
-#                         resolution=96
-#                     )
-
-#                     zip_file.writestr(
-#                         f"{safe_id}.pdf",
-#                         pdf_buffer.getvalue()
-#                     )
-
-#                     progress.progress(
-#                         (index + 1) / len(df)
-#                     )
-
-#             st.success("Certificates generated successfully!")
-
-#             st.download_button(
-#                 "📥 Download All Certificates (ZIP)",
-#                 data=zip_buffer.getvalue(),
-#                 file_name="certificates.zip",
-#                 mime="application/zip",
-#                 use_container_width=True
-#             )
 import streamlit as st
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
@@ -338,20 +75,32 @@ st.markdown(
     }
 
     /* Inputs */
+    /* File uploader - Improved visibility */
     div[data-testid="stFileUploaderDropzone"] {
-        background: var(--accent-soft);
-        border: 1.5px dashed var(--accent);
-        border-radius: 8px;
+        background: #F5EEDC !important;
+        border: 1.5px dashed #94702D !important;
+        border-radius: 10px !important;
     }
-    div[data-testid="stNumberInput"] input,
-    div[data-baseweb="input"] input {
-        font-family: 'Manrope', sans-serif;
-        font-weight: 600;
+
+    /* Upload text */
+    div[data-testid="stFileUploaderDropzone"] p,
+    div[data-testid="stFileUploaderDropzone"] span,
+    div[data-testid="stFileUploaderDropzone"] small {
+        color: #172033 !important;
     }
-    label, .stSlider label, .stNumberInput label {
-        font-weight: 600 !important;
-        font-size: 0.85rem !important;
-        color: var(--ink) !important;
+
+    /* Upload button */
+    div[data-testid="stFileUploaderDropzone"] button {
+        background: #FFFFFF !important;
+        color: #172033 !important;
+        border: 1px solid #94702D !important;
+        border-radius: 7px !important;
+        font-weight: 700 !important;
+    }
+
+    div[data-testid="stFileUploaderDropzone"] button:hover {
+        background: #94702D !important;
+        color: #FFFFFF !important;
     }
 
     /* Buttons */
