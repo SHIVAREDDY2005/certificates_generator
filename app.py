@@ -13,32 +13,54 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------- UI styling
+# ---------------------------------------------------------------- UI styling
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
     :root {
-        --ink: #1d1a3a;
-        --accent: #393078;
-        --accent-soft: #ece9f7;
-        --muted: #6b6882;
-        --line: #dedbec;
-        --page: #f7f6fb;
+        --ink: #172033;
+        --accent: #5145A5;
+        --accent-hover: #393078;
+        --muted: #596579;
+        --line: #E2E5EC;
+        --page: #FFFFFF;
+        --input: #FFFFFF;
+        --soft: #F6F7FB;
     }
 
-    html, body, [class*="css"], .stApp {
-        font-family: 'Manrope', sans-serif;
-        color: var(--ink);
+    /* Main application */
+    html, body, .stApp,
+    [data-testid="stAppViewContainer"] {
+        background: #FFFFFF !important;
+        color: var(--ink) !important;
+        font-family: 'Manrope', sans-serif !important;
+        color-scheme: light !important;
     }
-    .stApp { background: var(--page); }
+
+    /* All text */
+    .stApp p,
+    .stApp span,
+    .stApp label,
+    .stApp h1,
+    .stApp h2,
+    .stApp h3,
+    .stApp h4,
+    .stApp li,
+    .stApp [data-testid="stWidgetLabel"] {
+        color: var(--ink) !important;
+    }
 
     .block-container {
         max-width: 1280px;
         padding-top: 2.2rem;
         padding-bottom: 4rem;
     }
-    header[data-testid="stHeader"] { background: transparent; }
+
+    header[data-testid="stHeader"] {
+        background: #FFFFFF !important;
+    }
 
     /* Page header */
     .app-title {
@@ -46,10 +68,11 @@ st.markdown(
         font-weight: 800;
         letter-spacing: -0.02em;
         margin: 0;
-        color: var(--ink);
+        color: var(--ink) !important;
     }
+
     .app-sub {
-        color: var(--muted);
+        color: var(--muted) !important;
         font-size: 1rem;
         margin: 0.25rem 0 1.6rem 0;
     }
@@ -57,99 +80,175 @@ st.markdown(
     /* Section headings */
     .section-title {
         font-size: 1.05rem;
-        font-weight: 700;
+        font-weight: 800;
         margin: 0 0 0.15rem 0;
-        color: var(--ink);
+        color: var(--ink) !important;
     }
+
     .section-hint {
         font-size: 0.85rem;
-        color: var(--muted);
+        color: var(--muted) !important;
         margin: 0 0 0.9rem 0;
     }
 
-    /* Bordered containers */
+    /* Cards and containers */
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        background: #ffffff;
-        border: 1px solid var(--line) !important;
-        border-radius: 10px;
-    }
-
-    /* Inputs */
-    /* File uploader - Improved visibility */
-    div[data-testid="stFileUploaderDropzone"] {
-        background: #F5EEDC !important;
-        border: 1.5px dashed #94702D !important;
-        border-radius: 10px !important;
-    }
-
-    /* Upload text */
-    div[data-testid="stFileUploaderDropzone"] p,
-    div[data-testid="stFileUploaderDropzone"] span,
-    div[data-testid="stFileUploaderDropzone"] small {
-        color: #172033 !important;
-    }
-
-    /* Upload button */
-    div[data-testid="stFileUploaderDropzone"] button {
         background: #FFFFFF !important;
-        color: #172033 !important;
-        border: 1px solid #94702D !important;
-        border-radius: 7px !important;
-        font-weight: 700 !important;
+        border: 1px solid var(--line) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 2px 8px rgba(23, 32, 51, 0.04);
     }
 
-    div[data-testid="stFileUploaderDropzone"] button:hover {
-        background: #94702D !important;
-        color: #FFFFFF !important;
+    /* File uploader */
+/* File uploader - Force white background */
+[data-testid="stFileUploaderDropzone"] {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    border: 2px dashed #5145A5 !important;
+    border-radius: 10px !important;
+    color: #172033 !important;
+}
+
+/* Inner uploader containers */
+[data-testid="stFileUploaderDropzone"] > div,
+[data-testid="stFileUploaderDropzone"] section {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+}
+
+/* Drag and drop text */
+[data-testid="stFileUploaderDropzone"] p,
+[data-testid="stFileUploaderDropzone"] span,
+[data-testid="stFileUploaderDropzone"] small {
+    color: #172033 !important;
+    -webkit-text-fill-color: #172033 !important;
+}
+
+/* Browse files button */
+[data-testid="stFileUploaderDropzone"] button,
+[data-testid="stFileUploaderDropzone"] button span {
+    background: #5145A5 !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    border: 1px solid #5145A5 !important;
+    border-radius: 7px !important;
+    font-weight: 700 !important;
+}
+
+[data-testid="stFileUploaderDropzone"] button:hover {
+    background: #393078 !important;
+}
+
+    /* Number inputs */
+    div[data-testid="stNumberInput"] input,
+    div[data-baseweb="input"] input {
+        background: #FFFFFF !important;
+        color: var(--ink) !important;
+        -webkit-text-fill-color: var(--ink) !important;
+        border-radius: 7px !important;
+        font-family: 'Manrope', sans-serif !important;
+        font-weight: 600 !important;
+    }
+
+    div[data-testid="stNumberInput"] [data-baseweb="input"],
+    div[data-baseweb="input"] {
+        background: #FFFFFF !important;
+        border-color: #D5D9E2 !important;
+    }
+
+    /* Input labels */
+    div[data-testid="stWidgetLabel"] p,
+    .stSlider label,
+    .stNumberInput label {
+        color: var(--ink) !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Slider */
+    div[data-testid="stSlider"] {
+        color: var(--ink) !important;
+    }
+
+    div[data-testid="stSlider"] [role="slider"] {
+        background: var(--accent) !important;
+        border-color: var(--accent) !important;
+    }
+
+    /* Color picker */
+    div[data-testid="stColorPicker"] input {
+        color: var(--ink) !important;
     }
 
     /* Buttons */
-    .stButton > button, .stDownloadButton > button {
-        font-family: 'Manrope', sans-serif;
-        font-weight: 700;
-        border-radius: 8px;
-        padding: 0.7rem 1.2rem;
-        border: 1px solid var(--accent);
-    }
-    .stButton > button[kind="primary"] {
-        background: var(--accent);
-        color: #ffffff;
-    }
-    .stButton > button[kind="primary"]:hover {
-        background: #2b2460;
-        border-color: #2b2460;
-    }
+    .stButton > button,
     .stDownloadButton > button {
-        background: #ffffff;
-        color: var(--accent);
+        font-family: 'Manrope', sans-serif !important;
+        font-weight: 700 !important;
+        border-radius: 8px !important;
+        padding: 0.7rem 1.2rem !important;
+        border: 1px solid var(--accent) !important;
     }
+
+    .stButton > button[kind="primary"] {
+        background: var(--accent) !important;
+        color: #FFFFFF !important;
+    }
+
+    .stButton > button[kind="primary"]:hover {
+        background: var(--accent-hover) !important;
+        color: #FFFFFF !important;
+    }
+
+    .stDownloadButton > button {
+        background: #FFFFFF !important;
+        color: var(--accent) !important;
+    }
+
     .stDownloadButton > button:hover {
-        background: var(--accent-soft);
-        color: var(--accent);
-        border-color: var(--accent);
+        background: var(--accent) !important;
+        color: #FFFFFF !important;
     }
 
     /* Progress bar */
-    .stProgress > div > div > div > div { background-color: var(--accent); }
+    .stProgress > div > div > div > div {
+        background: var(--accent) !important;
+    }
 
-    /* Preview image + table */
+    /* Preview image */
     div[data-testid="stImage"] img {
-        border-radius: 6px;
+        border-radius: 8px;
         border: 1px solid var(--line);
     }
+
+    /* Participant table */
     div[data-testid="stDataFrame"] {
+        background: #FFFFFF !important;
         border: 1px solid var(--line);
         border-radius: 8px;
         overflow: hidden;
     }
 
+    /* Alerts */
+    div[data-testid="stAlert"] {
+        background: #F6F7FB !important;
+        border-radius: 9px;
+    }
+
+    /* Dividers */
+    hr {
+        border-color: var(--line) !important;
+    }
+
     /* Hide default Streamlit chrome */
-    #MainMenu, footer { visibility: hidden; }
+    #MainMenu, footer {
+        visibility: hidden;
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
 )
-
 st.markdown('<p class="app-title">🎓 Certificate Generator</p>', unsafe_allow_html=True)
 st.markdown(
     '<p class="app-sub">Upload a template and a participant list, position the text, then download every certificate as PNG and PDF.</p>',
@@ -167,9 +266,12 @@ def section(title, hint=None):
 left, right = st.columns([5, 7], gap="large")
 
 with left:
-    # File uploads
+# File uploads
     with st.container(border=True):
-        section("1. Upload files", "A PNG or JPG template, and a CSV with username and credential_id columns.")
+        section(
+            "1. Upload files",
+            "A PNG or JPG template, and a CSV with participant details."
+        )
 
         template_file = st.file_uploader(
             "Upload Certificate Template",
@@ -179,6 +281,20 @@ with left:
         csv_file = st.file_uploader(
             "Upload Participants CSV",
             type=["csv"]
+        )
+
+        # CSV format instructions
+        st.info("⚠️ Your CSV file must contain these exact two columns:")
+
+        st.markdown("""
+        | username | credential_id |
+        |----------|---------------|
+        | name 1 | CERT-001 |
+        | name 2 | CERT-002 |
+        """)
+
+        st.caption(
+            "Make sure the column names are exactly username and credential_id."
         )
 
     # Settings
@@ -335,7 +451,7 @@ if csv_file and template_file:
         st.error(
             "CSV must contain username and credential_id columns."
         )
-
+# File uploads
     else:
 
         with st.container(border=True):
